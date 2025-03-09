@@ -26,3 +26,13 @@ int main(){
     return 0;
 }
 ```
+
+## Dependencies
+
+Works only on x86_64 linux machines that use glibc.
+
+* ghc
+* fasm
+* ld
+
+Uses `fasm` as a backend assembly compiler and `ld` as a linker
