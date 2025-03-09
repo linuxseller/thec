@@ -50,7 +50,14 @@ parseFileContent = many $ consumeWS *> parser
 pAstInt :: Parser AST
 pAstInt = (\dgs -> AstNum $ read dgs) <$> notNull (spanParser isDigit)
 
-pAstString = (\x -> AstString x) <$> parseStringLiteral
+unescape [] = []
+unescape [x] = [x]
+unescape ('\\':'n':xs) = "\", 10, \"" <> (unescape xs)
+unescape ('\\':'\\':xs) = '\\' : (unescape xs)
+unescape ('\\':'"':xs) = '"' : (unescape xs)
+unescape (x:xs) = x : (unescape xs)
+
+pAstString = (\x -> AstString $ unescape x) <$> parseStringLiteral
 
 allowedTypes = ["int"]
 

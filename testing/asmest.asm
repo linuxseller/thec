@@ -1,7 +1,4 @@
 format ELF64
-section '.data' executable
-hello: db "BomBom", 10
-
 section '.text' executable
 public _start
 extrn printf
@@ -15,8 +12,12 @@ _start:
 main:
   push rbp
   mov rbp, rsp
-  mov rdi, hello
+  mov rdi, L1
+  call printf
+  mov rdi, L2
   call printf
   pop rbp
   mov rax, 0
   ret
+L1: db "Hello World!", 10, "", 0
+L2: db "Bye World!", 10, "", 0

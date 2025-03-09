@@ -1,6 +1,6 @@
 # thec
 
-thec - `The C` compiler written in haskell
+thec - `The C` (pronounced zek) compiler written in haskell
 
 ## Testing (?)
 
@@ -15,4 +15,14 @@ nob (inspired by Tsoding's nob.h) is building program that rebuilds project (whe
 $ ./nob runMain # will compile project and run it on `testing/test.c` file and will generate `./testing/asmest.asm`, a fasm assembly
 $ ./nob runMain runAsm # will compile project and generated assembly, and also link it, then you can
 $ ./testing/asmest
+```
+
+**thec** is able to compile only hello world for now (without any includes)
+
+```c
+int main(){
+    printf("Hello World\n");
+    printf("Bye World\n");
+    return 0;
+}
 ```
