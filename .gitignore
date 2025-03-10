@@ -1,5 +1,6 @@
 Main
 nob
-/temp/
+/temp/*
 /testing/asmtest
+/testing/asmtest.o
 calling_convention.txt

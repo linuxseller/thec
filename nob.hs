@@ -36,6 +36,7 @@ main = do
       exitWith ExitSuccess
     else return ()
   nobLog Info "Building program"
+  _ <- createDirectoryIfMissing False "temp"
   handle <- runCommand $ "ghc src/Main.hs src/Parser.hs src/Compiler.hs src/Data/Parser.hs -o " <> target <> " -outputdir temp"
   exitId <- waitForProcess handle
   nobLog Info $ "Build exited with code " <> show exitId
