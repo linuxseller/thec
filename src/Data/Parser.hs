@@ -11,6 +11,7 @@ data AST =
   | AstNum Int
   | AstString String
   | AstSemicolon
+  | AstComma
   deriving Show
 
 newtype Parser a = Parser {runParser :: String -> Maybe (String, a)}

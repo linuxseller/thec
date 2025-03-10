@@ -42,7 +42,8 @@ parseFileContent = many $ consumeWS *> parser
                   , pAstReturn
                   , pAstSemicolon
                   , pAstPrintf
-                  , pAstString]
+                  , pAstString
+                  , pAstComma]
         parser = foldl1 (<|>) parsers
 
 -- Parsing of AST
@@ -50,11 +51,12 @@ parseFileContent = many $ consumeWS *> parser
 pAstInt :: Parser AST
 pAstInt = (\dgs -> AstNum $ read dgs) <$> notNull (spanParser isDigit)
 
+unescape :: String -> String
 unescape [] = []
 unescape [x] = [x]
 unescape ('\\':'n':xs) = "\", 10, \"" <> (unescape xs)
 unescape ('\\':'\\':xs) = '\\' : (unescape xs)
-unescape ('\\':'"':xs) = '"' : (unescape xs)
+unescape ('\\':'"':xs) = '"' : (unescape xs) -- TODO: fix
 unescape (x:xs) = x : (unescape xs)
 
 pAstString = (\x -> AstString $ unescape x) <$> parseStringLiteral
@@ -75,6 +77,9 @@ pAstParen = (\t -> AstParen t) <$> (foldl1 (<|>) $ map parseChar "(){}[]")
 
 pAstReturn :: Parser AST
 pAstReturn = AstReturn <$ parseWord "return"
+
+pAstComma :: Parser AST
+pAstComma = AstComma <$ parseWord "," -- non alnum fixme: ??
 
 pAstSemicolon :: Parser AST
 pAstSemicolon = AstSemicolon <$ parseWord ";"
