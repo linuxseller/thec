@@ -8,15 +8,13 @@ _start:
   mov rdi, rax
   mov rax, 60
   syscall
-
 main:
   push rbp
   mov rbp, rsp
- mov rdi, L1
- mov rsi, 10
+  mov rdi, L1
+  mov rsi, 10
   call printf
- mov rdi, L2
-
+  mov rdi, L2
   call printf
   pop rbp
   mov rax, 0
