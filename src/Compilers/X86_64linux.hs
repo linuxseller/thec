@@ -2,7 +2,7 @@ module Compilers.X86_64linux where
 
 -- SUPPORTING ONLY 64 BIT OPERANDS FOR NOW
 
-import Data.CompileAST
+import Data.IR
 
 entryPoint =
   "format ELF64\n\
@@ -25,6 +25,7 @@ compileIR' ((Ret):xs) = "  ret\n"<> compileIR' xs
 compileIR' ((Push x):xs) = "  push " <> operandToAsm x <> "\n"<> compileIR' xs
 compileIR' ((Pop x):xs) = "  pop " <> operandToAsm x <> "\n"<> compileIR' xs
 
+compileIR :: ([Instruction], DataSection) -> String
 compileIR (insts, ds) = entryPoint <> compileIR' insts <> dsToString ds
 
 operandToAsm :: Operand -> String

@@ -2,16 +2,16 @@ module Data.Parser where
 
 import Control.Applicative
 
-data AST =
-  AstType String
-  | AstReturn
-  | AstParen Char
-  | AstMain
-  | AstPrintf
-  | AstNum Int
-  | AstString String
-  | AstSemicolon
-  | AstComma
+data Token =
+  TokenType String
+  | TokenReturn
+  | TokenParen Char
+  | TokenMain
+  | TokenPrintf
+  | TokenNum Int
+  | TokenString String
+  | TokenSemicolon
+  | TokenComma
   deriving Show
 
 newtype Parser a = Parser {runParser :: String -> Maybe (String, a)}

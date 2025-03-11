@@ -6,25 +6,29 @@ import Control.Monad
 
 import Parser
 import Data.Parser
+import Data.AST
+import BuildAst
 import Compiler
 import Compilers.X86_64linux
 
 main :: IO ()
 main = do
   fileContent <- readFile "testing/test.c"
-  let maybeAst = runParser parseFileContent fileContent
-  -- print maybeAst
-  case maybeAst of
+  let maybeToken = runParser parseFileContent fileContent
+  -- print maybeToken
+  case maybeToken of
     Nothing -> do
       putStrLn "ERROR PARSING"
       exitWith $ ExitFailure 1
-    (Just (x,ast)) -> if x /= "\n"
+    (Just (x,tokens)) -> if x /= "\n"
       then do
         putStrLn "ERROR PARSING (non empty ast `fst`)"
         exitWith $ ExitFailure 1
       else do
-        -- putStrLn $ compileIR $ (\(Right x) -> x) $ compile ast
-        case compileIR <$> compile ast of
-          (Right assembly) -> do
+        let aasstt = buildAST tokens
+        case compile aasstt of
+          (Right ir)-> do
+            let assembly = compileIR ir
             writeFile "testing/asmest.asm" assembly
-          (Left error) -> putStrLn $ "[ERROR]" <> error
+          _ -> putStrLn "Something horribly went wrong somewhere"
+  return ()

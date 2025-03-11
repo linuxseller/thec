@@ -33,23 +33,23 @@ parseInt = notNull $ spanParser isDigit
 parseStringLiteral :: Parser String
 parseStringLiteral = parseChar '"' *> spanParser (/='"') <* parseChar '"'
 
-parseFileContent :: Parser [AST]
+parseFileContent :: Parser [Token]
 parseFileContent = many $ consumeWS *> parser
-  where parsers = [pAstInt
-                  , pAstType
-                  , pAstMain
-                  , pAstParen
-                  , pAstReturn
-                  , pAstSemicolon
-                  , pAstPrintf
-                  , pAstString
-                  , pAstComma]
+  where parsers = [pTokenInt
+                  , pTokenType
+                  , pTokenMain
+                  , pTokenParen
+                  , pTokenReturn
+                  , pTokenSemicolon
+                  , pTokenPrintf
+                  , pTokenString
+                  , pTokenComma]
         parser = foldl1 (<|>) parsers
 
--- Parsing of AST
+-- Parsing of Token
 
-pAstInt :: Parser AST
-pAstInt = (\dgs -> AstNum $ read dgs) <$> notNull (spanParser isDigit)
+pTokenInt :: Parser Token
+pTokenInt = (\dgs -> TokenNum $ read dgs) <$> notNull (spanParser isDigit)
 
 unescape :: String -> String
 unescape [] = []
@@ -59,27 +59,27 @@ unescape ('\\':'\\':xs) = '\\' : (unescape xs)
 unescape ('\\':'"':xs) = '"' : (unescape xs) -- TODO: fix
 unescape (x:xs) = x : (unescape xs)
 
-pAstString = (\x -> AstString $ unescape x) <$> parseStringLiteral
+pTokenString = (\x -> TokenString $ unescape x) <$> parseStringLiteral
 
 allowedTypes = ["int"]
 
-pAstType :: Parser AST
-pAstType = (\t -> AstType t) <$> (foldl1 (<|>) $ map parseWord allowedTypes)
+pTokenType :: Parser Token
+pTokenType = (\t -> TokenType t) <$> (foldl1 (<|>) $ map parseWord allowedTypes)
 
-pAstMain :: Parser AST
-pAstMain = AstMain <$ parseWord "main"
+pTokenMain :: Parser Token
+pTokenMain = TokenMain <$ parseWord "main"
 
-pAstPrintf :: Parser AST
-pAstPrintf = AstPrintf <$ parseWord "printf"
+pTokenPrintf :: Parser Token
+pTokenPrintf = TokenPrintf <$ parseWord "printf"
 
-pAstParen :: Parser AST
-pAstParen = (\t -> AstParen t) <$> (foldl1 (<|>) $ map parseChar "(){}[]")
+pTokenParen :: Parser Token
+pTokenParen = (\t -> TokenParen t) <$> (foldl1 (<|>) $ map parseChar "(){}[]")
 
-pAstReturn :: Parser AST
-pAstReturn = AstReturn <$ parseWord "return"
+pTokenReturn :: Parser Token
+pTokenReturn = TokenReturn <$ parseWord "return"
 
-pAstComma :: Parser AST
-pAstComma = AstComma <$ parseWord "," -- non alnum fixme: ??
+pTokenComma :: Parser Token
+pTokenComma = TokenComma <$ parseWord "," -- non alnum fixme: ??
 
-pAstSemicolon :: Parser AST
-pAstSemicolon = AstSemicolon <$ parseWord ";"
+pTokenSemicolon :: Parser Token
+pTokenSemicolon = TokenSemicolon <$ parseWord ";"

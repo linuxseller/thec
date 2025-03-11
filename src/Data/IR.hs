@@ -1,4 +1,4 @@
-module Data.CompileAST where
+module Data.IR where
 
 type DataSection = [String]
 
